@@ -276,7 +276,7 @@ sed 's/^/transcript_id "&/g' noncodeIDs.txt > noncode_2.txt
 cat gffannotated.gtf | fgrep -f noncode_2.txt > Noncoding.gtf
 
 cat Noncoding.gtf | awk '$13 == "exon_number" {print $14, $10}' > exon1.txt
-cat exon1.txt | awk -F',' '{gsub(/"/, "", $1); print $0}' | awk '$1 > 3 {print $0}' > exon2.txt
+cat exon1.txt | awk -F',' '{gsub(/"/, "", $1); print $0}' | awk '$1 > 2 {print $0}' > exon2.txt
 cat exon2.txt | awk -F ';' '{print $2}' | sed 's/ //g' > exon3.txt
 sed 's/^/transcript_id "&/g' exon3.txt > exon4.txt
 cat gffannotated.gtf | fgrep -f exon4.txt > Exon_filtered.gtf
@@ -304,7 +304,7 @@ cp $filters/ref.fa $blast
 cp $filters/gffannotated.gtf $blast
 
 makeblastdb -in Noncoding200nt.fa -input_type fasta -parse_seqids -dbtype nucl -out LncRNA_novel
-blastn -db LncRNA_novel -query $lncRNAs -out BLAST.txt -evalue 0.001 -outfmt 6 -word_size 7
+blastn -db LncRNA_novel -query $lncRNAs -out BLAST.txt -evalue 0.001 -outfmt 6 -word_size 7 -num_threads $threads
 cat BLAST.txt | awk '{print $2}' > BLASTids.txt
 cat BLASTids.txt | awk '!seen[$0]++' > BLAST_nr.txt
 grep -Fvx -f BLAST_nr.txt noncodeIDs.txt > novel_lncRNAs.txt
