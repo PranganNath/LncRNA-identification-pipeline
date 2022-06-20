@@ -299,7 +299,7 @@ cd $blast
 cp $klncRNA/*.fa $blast
 mv *.fa lncRNAs.fasta
 cp $filters/Noncoding200nt.fa $blast
-cp $filters/noncodeIDs.txt $blast
+cp $filters/exon3.txt $blast
 cp $filters/ref.fa $blast
 cp $filters/gffannotated.gtf $blast
 
@@ -307,7 +307,7 @@ makeblastdb -in Noncoding200nt.fa -input_type fasta -parse_seqids -dbtype nucl -
 blastn -db LncRNA_novel -query $lncRNAs -out BLAST.txt -evalue 0.001 -outfmt 6 -word_size 7 -num_threads $threads
 cat BLAST.txt | awk '{print $2}' > BLASTids.txt
 cat BLASTids.txt | awk '!seen[$0]++' > BLAST_nr.txt
-grep -Fvx -f BLAST_nr.txt noncodeIDs.txt > novel_lncRNAs.txt
+grep -Fvx -f BLAST_nr.txt exon3.txt > novel_lncRNAs.txt
 sed 's/^/transcript_id "&/g' novel_lncRNAs.txt > LncRNA_2.txt
 cat gffannotated.gtf | fgrep -f LncRNA_2.txt > Novel_LncRNAs.gtf
 gffread -w Novel_LncRNAs.fa -g ref.fa Novel_LncRNAs.gtf
